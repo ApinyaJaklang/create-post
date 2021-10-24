@@ -1,25 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
+import Navbar from './pages/Navbar';
+import Input from './components/Input';
+import { PostModel } from './models/PostModel';
+import Post from "./components/Post";
+
+let id = 1;
+
 function App() {
+  const [posts, setPosts] = useState<PostModel[]>([]);
+
+  function addPost(newPost: string) {
+    setPosts([{id, title: newPost}, ...posts]);
+    id += 1;
+  }
+
+  function removePost(id: number) {
+    const updatedPosts = posts.filter((post) => post.id !== id);
+    setPosts(updatedPosts);
+  }
+
+  const removePostCallBack = (id: number) => {
+    const updatedPosts = posts.filter((post) => post.id !== id);
+    setPosts(updatedPosts);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar></Navbar>
+      <Input addPost={addPost}></Input>
+      {posts.map((post) => (
+        <Post 
+          key={post.id} 
+          id={post.id} 
+          title={post.title}
+          callBack={removePostCallBack} 
+        />
+      ))}
+    </>
   );
 }
 
